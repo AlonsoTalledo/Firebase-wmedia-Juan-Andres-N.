@@ -26,5 +26,15 @@
   };
   // Initialize Firebase
   firebase.initializeApp(firebaseConfig);
-</script></body>
+  //Guardar una referencia a la base de datos
+var db = firebase.database();
+// guardar info de perfil
+db.ref('/perfiles/juanwmedia').set({
+    username: 'juanwmedia',
+    passwowrd: '666',
+    ciudad: 'Valencia',
+    pais: 'España'
+})
+</script>
+</body>
 </html>
