@@ -7,6 +7,13 @@
     <title>Document</title>
 </head>
 <body>
+    <form id="formulario">
+        <textarea name="mensaje" id="mensaje" cols="30" rows="10">
+        </textarea>
+        <br>
+        <input type="submit" value="Enviar mensaje">
+
+    </form>
 <!-- The core Firebase JS SDK is always required and must be listed first -->
 <script src="https://www.gstatic.com/firebasejs/6.4.0/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/6.4.0/firebase-database.js"></script>
@@ -30,12 +37,26 @@
   //Guardar una referencia a la base de datos
 var db = firebase.database();
 // guardar info de perfil
-db.ref('/perfiles/juanwmedia').set({
+/*db.ref('/perfiles/juanwmedia').set({
     username: 'juanwmedia',
     passwowrd: '666',
     ciudad: 'Valencia',
     pais: 'Peru'
-});
+}).then(()=>console.info('Datos añadidos'));*/
+
+//Guardar nuevos datos anidados(lista)
+
+document.getElementById('formulario').onsubmit = function (event) {
+    event.preventDefault();
+    let mensaje  = document.getElementById('mensaje');
+    db.ref('chats').push({
+        username: 'juanwmedia',
+        mensaje: mensaje.value
+    }).then(()=>{
+        console.info('Mensaje Enviado');
+        mensaje.value = '';
+    })
+}
 </script>
 </body>
 </html>
