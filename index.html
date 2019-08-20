@@ -7,14 +7,21 @@
     <title>Document</title>
 </head>
 <body>
-    <form id="formulario">
-        <textarea name="mensaje" id="mensaje" cols="30" rows="10">
-        </textarea>
-        <br>
-        <input type="submit" value="Enviar mensaje">
+    <div id="app">
+        <form @submit.prevent="enviarMensaje">
+            <textarea v-model="mensaje"  cols="30" rows="10">
+            </textarea>
+            <br>
+            <input type="submit" value="Enviar mensaje">
+        </form>
+        <hr>
+        <h1>Mensajes</h1>
+        <p>{{error}}</p>
+        <ul></ul>
+    </div>
 
-    </form>
 <!-- The core Firebase JS SDK is always required and must be listed first -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.6.10/vue.js"></script>
 <script src="https://www.gstatic.com/firebasejs/6.4.0/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/6.4.0/firebase-database.js"></script>
 
@@ -46,7 +53,7 @@ var db = firebase.database();
 
 //Guardar nuevos datos anidados(lista)
 
-document.getElementById('formulario').onsubmit = function (event) {
+/*document.getElementById('formulario').onsubmit = function (event) {
     event.preventDefault();
     let mensaje  = document.getElementById('mensaje');
     db.ref('chats').push({
@@ -56,7 +63,28 @@ document.getElementById('formulario').onsubmit = function (event) {
         console.info('Mensaje Enviado');
         mensaje.value = '';
     })
-}
+}*/
+//VUE stuff
+
+new Vue({
+    el: '#app',
+    data:{
+        mensaje: null,
+        username: 'juanwmedia',
+
+    },
+    methods:{
+        enviarMensaje(){
+            db.ref('/chats').push({
+                username:this.username,
+                mensaje: this.mensaje,
+            }).then(()=>{
+                this.mensaje = ''
+            })
+        }
+    }
+});
+
 </script>
 </body>
 </html>
