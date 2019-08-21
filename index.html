@@ -16,8 +16,12 @@
         </form>
         <hr>
         <h1>Mensajes</h1>
-        <p>{{error}}</p>
-        <ul></ul>
+        <h5>{{info}}</h5>
+        <ul>
+            <li v-for="msj in mensajes">
+                {{msj.mensaje}} escrito por <small><i>{{msj.username}}</i></small>
+            </li>
+        </ul>
     </div>
 
 <!-- The core Firebase JS SDK is always required and must be listed first -->
@@ -68,18 +72,35 @@ var db = firebase.database();
 
 new Vue({
     el: '#app',
+    created(){
+        db.ref('/chats').on('value',snapshot => this.cargarMensajes(snapshot.val()))
+    },
     data:{
         mensaje: null,
         username: 'juanwmedia',
+        mensajes: [],
+        info:''
 
     },
     methods:{
+
+        cargarMensajes(mensajes){
+            this.mensajes = []
+            for(let key in mensajes){
+                this.mensajes.push({
+                    mensaje : mensajes[key].mensaje,
+                    username: mensajes[key].username
+                })
+            }
+            this.mensajes.reverse()
+        },
         enviarMensaje(){
             db.ref('/chats').push({
                 username:this.username,
                 mensaje: this.mensaje,
-            }).then(()=>{
+            }).then((data)=>{
                 this.mensaje = ''
+                this.info = data.key
             })
         }
     }
