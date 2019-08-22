@@ -19,7 +19,9 @@
         <h5>{{info}}</h5>
         <ul>
             <li v-for="msj in mensajes">
-                {{msj.mensaje}} escrito por <small><i>{{msj.username}}</i></small>
+                <span contenteditable="true" @blur="editarMensaje($event,msj.key)">{{msj.mensaje}} escrito por</span>
+                <small><i>{{msj.username}}</i></small>
+                <button @click="eliminarMensaje(msj.key)">x</button>
             </li>
         </ul>
     </div>
@@ -89,7 +91,8 @@ new Vue({
             for(let key in mensajes){
                 this.mensajes.push({
                     mensaje : mensajes[key].mensaje,
-                    username: mensajes[key].username
+                    username: mensajes[key].username,
+                    key
                 })
             }
             this.mensajes.reverse()
@@ -98,10 +101,20 @@ new Vue({
             db.ref('/chats').push({
                 username:this.username,
                 mensaje: this.mensaje,
+
             }).then((data)=>{
                 this.mensaje = ''
                 this.info = data.key
             })
+        },
+        editarMensaje(mensaje, key){
+            db.ref('/chats/'+ key).update({
+                mensaje: mensaje.target.innerHTML
+            })
+        },
+        eliminarMensaje(key){
+            if(confirm('¿Seguro que desea eliminar?'))
+                db.ref('/chats/'+ key).remove()
         }
     }
 });
